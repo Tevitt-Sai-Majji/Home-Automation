@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   
+  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.2/mqttws31.min.js" type="text/javascript"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+  
+  
+  <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+  
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+        <title>Home Automation DashBoard</title>
+        <style>
+            .container{
+                text-align: center;
+                height: 100vh;
+                background-image: url(./blurhome.jpg);
+                background-size: 200vh;
+                background-attachment: fixed;
+                color : black;
+                text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+            }
+            button{
+                height: 10%;
+                width: 25%;
+                background-color: rgba(0, 0, 0, 0.5);
+                border-radius: 5px;
+                cursor: pointer;
+                border: 1px solid rgba(0, 0, 0, 0.7);
+                margin: 2% 34%;
+                color:aliceblue;
+                text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.4);
+                box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24);
+                @media(max-width: 769px) {
+                    height : 8px;
+                    width : 300px;
+                }
+            }
+            button:hover{
+                background-color: rgba(0, 0, 0, 0.1)
+            }
+            .row{
+                display: flex;
+                justify-content: center;
+            }
+            h1{
+                padding-right: 10%;
+            }
+            .lgot{
+                margin: 15px 0px 0px 0px;
+                width: 10%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row"> 
+                <h1>Home Automation</h1>
+                <button class ='lgot' onClick=logOut()>Log out</button> 
+            </div>
+            <p id="cc">Please wait to Connect</p>
+            <div id ='buttons' class= 'buttons'>
+                <button  id='l1' onClick= changeLight1()>
+                  Light 1 ON
+                </button>
+                <button id='l2' onClick= changeLight2()>
+                  Light 2 ON
+                </button>
+                <button id='l3' onClick= changeLight3()>
+                  Light 3 ON
+                </button>
+                <button id='l4' onClick= changeLight4()>
+                  Light 4 ON
+                </button>
+                <button onClick= allOn()>
+                  ALL ON
+                </button>
+                <button  onClick= allOff()>
+                  ALL OFF
+                </button>    
+            </div>
+        </div>
+        <script type="text/javascript">
+            $( document ).ready(function() {
+                clientID = "clientID-" + parseInt(Math.random() * 100);
+
+                // Fetch the hostname/IP address and port number from the form
+                host = "54.144.95.208";
+                port = "9001";
+
+   
+                // Initialize new Paho client connection
+                client = new Paho.MQTT.Client(host, Number(port), clientID);
+
+                // Set callback handlers
+                client.onConnectionLost = onConnectionLost;
+                client.onMessageArrived = onMessageArrived;
+                // Connect the client, if successful, call onConnect function
+                client.connect({ 
+                    onSuccess: onConnect,
+                    userName: "Aditya",
+                    password: "aditya",
+                });
+                console.log( "ready!" );
+            });
+            let l1=false,l2=false,l3=false,l4=false;
+            let l1Button = document.getElementById('l1');
+            let l2Button = document.getElementById('l2');
+            let l3Button = document.getElementById('l3');
+            let l4Button = document.getElementById('l4');
+
+            // Called when the client connects
+            function onConnect() {
+                // Fetch the MQTT topic from the form
+                topic = "iot/status"
+                document.getElementById('cc').innerHTML="";
+                // // Subscribe to the requested topic
+                client.subscribe(topic);
+                console.log("Subscribed to" + topic);
+                console.log("Server Conneted");
+            }
+
+            // Called when the client loses its connection
+            function onConnectionLost(responseObject) {
+                console.log("onConnectionLost: Connection Lost");
+                if (responseObject.errorCode !== 0) {
+                    console.log("onConnectionLost: " + responseObject.errorMessage);
+                }
+            }
+
+            function publish()
+            {
+                // pmessage=document.getElementById("Pmessage").value;
+                var resmessage = (l1?"1":"0")+(l2?"1":"0")+(l3?"1":"0")+(l4?"1":"0");
+                console.log(resmessage); 
+                message=new Paho.MQTT.Message(resmessage);
+                message.destinationName = "iot/home";
+                message.qos = 0;
+
+                client.send(message);
+            }
+
+
+            // Called when a message arrives
+            function onMessageArrived(message) {
+                console.log("onMessageArrived: " + message.payloadString);
+                var bulbstatus=message.payloadString;
+                if(bulbstatus[0]=='0'){
+                    l1=false;
+                    l1Button.innerHTML="Light 1 ON";
+                }
+                else{
+                    l1=true;
+                    l1Button.innerHTML="Light 1 OFF";
+                }
+                if(bulbstatus[1]=='0'){
+                    l2=false;
+                    l2Button.innerHTML="Light 2 ON";
+                }
+                else{
+                    l2=true;
+                    l2Button.innerHTML="Light 2 OFF";
+                }
+                if(bulbstatus[3]=='0'){
+                    l4=false;
+                    l4Button.innerHTML="Light 4 ON";
+                }
+                else{
+                    l4=true;
+                    l4Button.innerHTML="Light 4 OFF";
+                }
+                if(bulbstatus[2]=='0'){
+                    l3=false;
+                    l3Button.innerHTML="Light 3 ON";
+                }
+                else{
+                    l3=true;
+                    l3Button.innerHTML="Light 3 OFF";
+                }
+            }
+            function changeLight1(){
+                l1=!l1;
+                publish();
+            }
+            function changeLight2(){
+                l2=!l2;
+                publish();
+            }
+            function changeLight3(){
+                l3=!l3;
+                publish();
+            }
+            function changeLight4(){
+                l4=!l4;
+                publish();
+            }
+            function allOn(){
+                l1=true;
+                l2=true;
+                l3=true;
+                l4=true;
+                publish();
+            }
+            function allOff(){
+                l1=false;
+                l2=false;
+                l3=false;
+                l4=false;
+                publish();
+            }
+            // Called when the disconnection button is pressed
+            function startDisconnect() {
+                client.disconnect();
+                console.log("Server Disconnected")
+            }
+
+            function logOut(){
+                startDisconnect();
+                window.alert('loged out');
+                window.location.href="./index.html";
+            }
+        </script>
+    </body>
+</html>

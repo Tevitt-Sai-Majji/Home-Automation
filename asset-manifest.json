@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Home-Automation/static/css/main.e6c13ad2.css",
+    "main.js": "/Home-Automation/static/js/main.19a5a22c.js",
+    "static/js/787.9679f5b0.chunk.js": "/Home-Automation/static/js/787.9679f5b0.chunk.js",
+    "index.html": "/Home-Automation/index.html",
+    "main.e6c13ad2.css.map": "/Home-Automation/static/css/main.e6c13ad2.css.map",
+    "main.19a5a22c.js.map": "/Home-Automation/static/js/main.19a5a22c.js.map",
+    "787.9679f5b0.chunk.js.map": "/Home-Automation/static/js/787.9679f5b0.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.19a5a22c.js"
+  ]
+}
