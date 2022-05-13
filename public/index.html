@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+    <!-- start -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home Automation</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.2/mqttws31.min.js" type="text/javascript"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+  
+  
+  <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+  
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <!-- end -->
+
+    
+    <title>Home Automation</title>
+    <style>
+      .container{
+        text-align: center;
+        height: 100vh;
+        background-image: url(./blurhome.jpg);
+        background-size: 200vh;
+        background-attachment: fixed;
+        color : black;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+      }
+      .login{
+        flex-direction : column;
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        padding : 20px;
+        margin: 0px 30%;
+        @media screen and (min-width: 769px) {
+          margin:0px 0px;
+        }
+      
+      }
+      input{
+        height: 30px;
+        width: 250px;
+        margin: 10px 0px; 
+        border-radius: 5px;
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24);
+        @media (max-width: 769px) {
+          height : 8px;
+          width : 50px;
+        }
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      
+      .submit{
+        cursor : pointer;
+      }
+      h1{
+        margin-bottom: 10%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div class="container">
+      <h1>Home Automation</h1>
+      <div id="login">
+        <h2>Log In</h2>
+        <form name ='myForm' method='post'>
+            <div class="login">
+                <input id="uname" type="text" name="uname" placeholder="Username" ><br/>
+                <input id="pasd" type="password" name="password" placeholder="Password" ><br/>
+                <input class="submit" type="button" value="Log in" onclick="verify()">
+            </div>
+        </form>
+    </div>
+    </div>
+  
+
+    <script type="text/javascript">
+      const user = 'Hanuman';
+      const password = 'U2FsdGVkX18zm78FSrlhlcqGb0m6kQu+RUEv3pMzEQM=';
+      function verify(){
+          var un= document.forms["myForm"]["uname"].value;
+          var psd = document.forms["myForm"]["password"].value;
+
+          var encryptedAES = CryptoJS.AES.encrypt(psd, "Jil Jil Jiga");
+	        var decryptedBytes = CryptoJS.AES.decrypt(encryptedAES, "Jil Jil Jiga");
+          var decrypt = CryptoJS.AES.decrypt(password, "Jil Jil Jiga");
+
+          if(un==user && decryptedBytes.toString(CryptoJS.enc.Utf8)==decrypt.toString(CryptoJS.enc.Utf8)){
+            console.log("valid user");
+            window.location.href='./homepg.html';
+          }
+          else{
+            window.alert('Invalid Details');
+          }
+      }
+      
+    </script>
+  </body>
+</html>
